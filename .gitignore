@@ -1,1 +1,4 @@
 main.js
+package.json
+build/
+node_modules/
