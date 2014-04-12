@@ -3,9 +3,9 @@ var ignoreUrlParams = true;
 var visitedUrls = {};
 var pendingUrls = [];
 var everyStepDo = function() {};
+var domainRegex = "";
 
 // Create instances
-//var utils = require('utils')
 var helpers = require('./helpers')
 
 // Set URLs we want to skip
@@ -18,8 +18,26 @@ exports.everyStepDo = function(fn) {
 	everyStepDo = fn;
 }
 
+function getDomainRegex(url) {
+	pathArray = url.split( '/' );
+	protocol = pathArray[0];
+	host = pathArray[2];
+	parts = host.split('.');
+	return new RegExp("^" + protocol + "//(.*?)" + parts[parts.length-2] + "\." + parts[parts.length-1]);
+}
+
+function shouldCrawl(url) {
+	var correctDomain = url.match(domainRegex) !== null;
+	var notVisited = visitedUrls[url] == undefined;
+	return correctDomain && notVisited;
+}
+
 // Spider from the given URL
 function crawl(url) {
+	// Set base domain
+	if(domainRegex == "") {
+		domainRegex = getDomainRegex(url);
+	}
 
 	// Add the URL to the visited stack
 	visitedUrls[url] = true;
@@ -53,7 +71,7 @@ function crawl(url) {
 		Array.prototype.forEach.call(links, function(link) {
 			var newUrl = helpers.absoluteUri(baseUrl, link);
 			if (ignoreUrlParams) newUrl = helpers.stripParams(newUrl);
-			if (pendingUrls.indexOf(newUrl) == -1 && visitedUrls[newUrl] == undefined) {
+			if (pendingUrls.indexOf(newUrl) == -1 && shouldCrawl(newUrl)) {
 				//casper.echo(casper.colorizer.format('-> Pushed ' + newUrl + ' onto the stack', { fg: 'magenta' }));
 				pendingUrls.push(newUrl);
 			}
