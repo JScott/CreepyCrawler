@@ -1,4 +1,3 @@
-var fs = require('fs');
 var casper = require('casper').create();
 var spider = require('./spider');
 
