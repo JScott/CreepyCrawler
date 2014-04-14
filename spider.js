@@ -26,8 +26,8 @@ casper.on('resource.received', function(resource) {
 	}
 });
 
-function onHtmlPage() {
-	return currentMimeType !== null && currentMimeType.match("html");
+function isMimeType(type) {
+	return currentMimeType !== null && currentMimeType.match(type);
 }
 
 function getDomainRegex(url) {
@@ -63,7 +63,7 @@ function crawl(url) {
 
 	// Open the URL
 	casper.open(url).then(function() {
-		if (onHtmlPage()) {
+		if (isMimeType("html")) {
 			everyStepDo();
 
 			// Set the status style based on server status code
