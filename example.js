@@ -11,15 +11,15 @@ casper.start();
 casper.setHttpAuth('name', 'pass');
 
 casper.thenOpen(url, function() {
-  this.echo(">> Waiting for an automatic redirect");
+	this.echo(">> Waiting for an automatic redirect");
 }).waitForUrl(/Login/);
 
 casper.waitUntilVisible('form#login', function() {
-  this.echo(">> Logging in");
-  this.fill('form[name="Login"]', {
-    'name': 'name',
-    'pass': 'pass'
-  }, true);
+	this.echo(">> Logging in");
+	this.fill('form[name="Login"]', {
+		'name': 'name',
+		'pass': 'pass'
+	}, true);
 });
 
 // Start spidering
